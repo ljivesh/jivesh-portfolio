@@ -1,46 +1,36 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useTheme } from "next-themes";
+import { Menu, Palette } from "lucide-react";
+import { useState } from "react";
 
 const navigation = [
-  { label: "Work", href: "/#work" },
-  { label: "Approach", href: "/#approach", desktopOnly: true },
-  { label: "Experience", href: "/#experience", desktopOnly: true },
-  { label: "Résumé", href: "/resume" },
+  ["Work", "/work"],
+  ["Writing", "/writing"],
+  ["Guestbook", "/guestbook"],
+  ["Contact", "/contact"],
+  ["Résumé", "/resume"],
 ];
 
 export function SiteHeader() {
-  return (
-    <header className="sticky top-0 z-50 border-b border-line bg-paper/88 backdrop-blur-xl print:hidden">
-      <div className="shell flex min-h-16 items-center justify-between md:min-h-18">
-        <Link
-          className="group inline-flex min-h-11 items-center gap-3"
-          href="/"
-          aria-label="Jivesh Lakhani, home"
-        >
-          <span className="font-mono text-base font-bold tracking-[-0.04em]">
-            Menma<span className="text-signal">/</span>
-          </span>
-          <span className="hidden text-xs text-dim sm:block">
-            AI product engineer
-          </span>
-        </Link>
+  const pathname = usePathname();
+  const { theme, setTheme } = useTheme();
+  const [open, setOpen] = useState(false);
+  if (pathname === "/" || pathname.startsWith("/admin")) return null;
 
-        <nav className="flex items-center gap-4 text-xs text-muted sm:gap-7" aria-label="Primary navigation">
-          {navigation.map((item) => (
-            <Link
-              className={`${item.desktopOnly ? "hidden md:inline-flex" : "inline-flex"} min-h-11 items-center transition-colors hover:text-ink`}
-              href={item.href}
-              key={item.label}
-            >
-              {item.label}
-            </Link>
-          ))}
-          <Link
-            className="inline-flex min-h-9 items-center rounded-full bg-signal px-4 font-semibold text-[#06101a] transition hover:-translate-y-0.5 hover:bg-signal-bright"
-            href="/#contact"
-          >
-            Let&apos;s talk
-          </Link>
+  return (
+    <header className="site-header print:hidden">
+      <div className="site-header-inner">
+        <Link className="site-brand" href="/">MENMA<span>/</span><small>Jivesh Lakhani</small></Link>
+        <nav className={open ? "open" : ""} aria-label="Primary navigation">
+          {navigation.map(([label, href]) => <Link className={pathname === href ? "active" : ""} href={href} key={href} onClick={() => setOpen(false)}>{label}</Link>)}
         </nav>
+        <div className="site-actions">
+          <button type="button" onClick={() => setTheme(theme === "green" ? "amber" : "green")} aria-label="Change phosphor color"><Palette /></button>
+          <button className="site-menu-button" type="button" onClick={() => setOpen(!open)} aria-label="Toggle navigation"><Menu /></button>
+        </div>
       </div>
     </header>
   );

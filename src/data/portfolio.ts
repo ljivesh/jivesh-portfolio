@@ -4,6 +4,14 @@ export type ContactLink = {
   external?: boolean;
 };
 
+export const brand = {
+  name: "Menma",
+  osName: "MENMA.OS",
+  realName: "Jivesh Lakhani",
+  tagline: "AI Product Engineer",
+  summary: "Production AI systems, commerce platforms, browser automation, and backend infrastructure.",
+};
+
 export type Experience = {
   company: string;
   role: string;

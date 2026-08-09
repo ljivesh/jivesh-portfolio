@@ -1,0 +1,4 @@
+"use client";
+import { useQuery } from "@tanstack/react-query";
+import { formatRelativeDate } from "@/lib/utils";
+export function AuditLog(){const query=useQuery({queryKey:["admin-audit"],queryFn:async()=>{const r=await fetch("/api/admin/audit");if(!r.ok)throw new Error("Failed");return r.json();}});return <div className="mt-8 data-grid">{query.data?.logs?.map((log:{id:string;action:string;entityType:string;entityId:string;createdAt:string})=><div className="data-row" key={log.id}><span className="font-mono text-[9px] text-signal">{log.entityType}</span><div><p className="font-medium">{log.action}</p><p className="font-mono text-[9px] text-text-soft-400">{log.entityId}</p></div><span className="font-mono text-[9px] text-text-soft-400">{formatRelativeDate(log.createdAt)}</span></div>)}</div>}

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+    <title>MENMA.OS CRT renderer</title>
+    <style>
+      *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#191919}#Canvas3D{display:block;width:100%;height:100%;outline:0;touch-action:none}#MainDiv,#MainButton{display:none!important}
+    </style>
+  </head>
+  <body>
+    <canvas id="Canvas3D" aria-label="Interactive three-dimensional retro computer"></canvas>
+    <div id="MainDiv">
+      <div id="MouseGlow"></div>
+      <div id="RightPanel">
+        <div id="Section1" class="Section"></div>
+        <div id="Section2" class="Section"></div>
+        <div id="Section3" class="Section"></div>
+      </div>
+      <div id="LeftPanel">
+        <div class="NavItem" DataSection="Section1"></div>
+        <div class="NavItem" DataSection="Section2"></div>
+        <div class="NavItem" DataSection="Section3"></div>
+      </div>
+    </div>
+    <button id="MainButton" type="button">toggle</button>
+    <audio id="ComputerBoot" muted></audio>
+    <audio id="ComputerAmbient" muted></audio>
+    <audio id="ComputerBeep" muted></audio>
+    <audio id="KeyboardPressed" muted></audio>
+    <script>
+      function GetText(){return ""}
+      function KeyPressed(key,event){
+        parent.postMessage({
+          type:"menma-crt-key",
+          key,
+          ctrlKey:Boolean(event?.ctrlKey),
+          altKey:Boolean(event?.altKey),
+          metaKey:Boolean(event?.metaKey)
+        },location.origin);
+      }
+    </script>
+    <script src="scripts/model-files.js"></script>
+    <script src="scripts/rendering-functions.js"></script>
+    <script src="scripts/main.js"></script>
+    <script>
+      document.getElementById("MainButton").click();
+      addEventListener("message",event=>{
+        if(event.data?.type==="menma-crt-focus")document.getElementById("Canvas3D").focus();
+        if(event.origin===location.origin&&event.data?.type==="menma-crt-text"){
+          UpdateTextTexture(event.data.text);
+          TextTextureReady=true;
+        }
+      });
+      document.getElementById("Canvas3D").addEventListener("wheel",event=>{
+        parent.postMessage({type:"menma-crt-scroll",direction:Math.sign(event.deltaY)},location.origin);
+        event.preventDefault();
+      },{passive:false});
+      parent.postMessage({type:"menma-crt-ready"},location.origin);
+    </script>
+  </body>
+</html>

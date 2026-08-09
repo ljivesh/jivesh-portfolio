@@ -1,0 +1,3 @@
+import { Card } from "@/components/ui/card";
+import { ResetPasswordForm } from "@/components/admin/reset-password-form";
+export default async function Page({searchParams}:{searchParams:Promise<{token?:string}>}){const{token}=await searchParams;return <main className="grid min-h-screen place-items-center p-5"><Card className="w-full max-w-md p-7"><p className="eyebrow">Account setup</p><h1 className="mt-4 text-3xl font-semibold">Set your password</h1><p className="mt-2 mb-6 text-sm text-text-sub-600">After this, sign in and enroll TOTP.</p>{token?<ResetPasswordForm token={token}/>:<p className="text-error-base">Missing or expired token.</p>}</Card></main>}

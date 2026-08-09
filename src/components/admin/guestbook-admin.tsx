@@ -1,0 +1,8 @@
+"use client";
+
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { formatRelativeDate } from "@/lib/utils";
+
+export function GuestbookAdmin() { const client=useQueryClient(); const query=useQuery({queryKey:["admin-guestbook"],queryFn:async()=>{const r=await fetch("/api/admin/guestbook?status=pending");if(!r.ok)throw new Error("Failed to load");return r.json();}}); const mutate=useMutation({mutationFn:async(input:{id:string;status:"approved"|"rejected"})=>{const r=await fetch("/api/admin/guestbook",{method:"PATCH",headers:{"content-type":"application/json"},body:JSON.stringify(input)});if(!r.ok)throw new Error("Update failed");},onSuccess:()=>client.invalidateQueries({queryKey:["admin-guestbook"]})}); return <div className="mt-8 space-y-3">{query.data?.entries?.length ? query.data.entries.map((entry:{id:string;name:string;message:string;createdAt:string})=><Card className="p-5" key={entry.id}><div className="flex flex-col justify-between gap-5 sm:flex-row"><div><div className="flex items-center gap-3"><h2 className="font-semibold">{entry.name}</h2><span className="font-mono text-[9px] text-text-soft-400">{formatRelativeDate(entry.createdAt)}</span></div><p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-text-sub-600">{entry.message}</p></div><div className="flex shrink-0 gap-2"><Button size="sm" onClick={()=>mutate.mutate({id:entry.id,status:"rejected"})}>Reject</Button><Button size="sm" variant="primary" onClick={()=>mutate.mutate({id:entry.id,status:"approved"})}>Approve</Button></div></div></Card>):<Card className="p-8 text-center text-text-sub-600">No messages waiting for moderation.</Card>}</div>; }

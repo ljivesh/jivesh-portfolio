@@ -1,34 +1,35 @@
-# Jivesh Lakhani — Portfolio
+# Menma — Jivesh Lakhani Portfolio
 
-A recruiter-first engineering portfolio built with Next.js 16, React 19, TypeScript, and Tailwind CSS 4.
+A dual-interface engineering portfolio built with Next.js 16, React 19, TypeScript, Tailwind CSS 4, PostgreSQL, and an embedded xterm.js terminal.
 
-## Run locally
+## Features
+
+- Responsive modern portfolio with recruiter-focused content and five case studies.
+- Original LuckeyDuckey-style 3D CRT workstation backed by xterm.js. Its live 55×30 terminal buffer is rendered into the monitor's WebGL screen texture, with a virtual filesystem, command history, cursor editing, scrollback, audio, and themes.
+- MDX writing, moderated guestbook, contact delivery, web/PDF résumé, and SEO metadata.
+- Better Auth administration with roles, 2FA, moderation, contact inbox, and audit logs.
+
+## Development
 
 ```bash
+cp .env.example .env.local
 pnpm install
+pnpm db:migrate
 pnpm dev
 ```
-
-Open `http://localhost:3000`.
 
 ## Checks
 
 ```bash
 pnpm lint
 pnpm typecheck
+pnpm test
 pnpm build
+pnpm test:e2e
 ```
-
-## Content
-
-Verified portfolio copy and project data live in `src/data/portfolio.ts`. Routes are statically generated from that data:
-
-- `/` — recruiter-focused homepage
-- `/work/[slug]` — four engineering case studies
-- `/resume` — browser and print-ready résumé
 
 ## Deployment
 
-Set `NEXT_PUBLIC_SITE_URL` to the production origin before deploying. Copy `.env.example` to `.env.local` for local metadata testing.
+The included Dockerfile produces a standalone Next.js image. Configure the variables in `.env.example`, run database migrations as an explicit release step, and bootstrap the first administrator with `pnpm admin:bootstrap`.
 
-The app is ready for Vercel or any host that supports Next.js.
+See `THIRD_PARTY_NOTICES.md` for the licenses covering the terminal and retro audio assets.

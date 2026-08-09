@@ -40,7 +40,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     <main id="main-content">
       <header className="hero-field relative overflow-hidden border-b border-line">
         <div className="shell py-12 sm:py-18 lg:py-22">
-          <Link className="inline-flex min-h-11 items-center font-mono text-[11px] text-muted transition-colors hover:text-signal" href="/#work">
+          <Link className="inline-flex min-h-11 items-center font-mono text-[11px] text-muted transition-colors hover:text-signal" href="/work">
             ← Back to selected work
           </Link>
 
