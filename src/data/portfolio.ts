@@ -54,7 +54,7 @@ export const identity = {
   availability:
     "Open to founding, applied AI, backend, platform, and full-stack engineering roles.",
   email: "ljivesh@gmail.com",
-  location: "Jaipur, Rajasthan, India",
+  location: "India",
 };
 
 export const contacts: ContactLink[] = [

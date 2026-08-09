@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BriefcaseBusiness, CodeXml, FileText, Mail, Menu, Monitor, Volume2, VolumeX, X } from "lucide-react";
+import { MenmaLogo } from "@/components/menma-logo";
 import { brand, capabilityGroups, contacts, experience, identity, projects } from "@/data/portfolio";
 import { RetroComputerTerminal } from "./macintosh-terminal";
 
@@ -27,6 +28,7 @@ export function MenmaPortfolio() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState("about");
   const [sound, setSound] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const frameId = requestAnimationFrame(() => setSound(localStorage.getItem("menma-sound") === "on"));
@@ -34,15 +36,42 @@ export function MenmaPortfolio() {
   }, []);
 
   useEffect(() => {
-    const root = document.querySelector(".menma-scroll");
+    const root = scrollRef.current;
     if (!root) return;
-    const observer = new IntersectionObserver((entries) => {
-      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (visible) setActive(visible.target.id);
-    }, { root, threshold: [0.25, 0.55] });
-    root.querySelectorAll("[data-home-section]").forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
+    const sections = [...root.querySelectorAll<HTMLElement>("[data-home-section]")];
+    let frame = 0;
+    const updateActiveSection = () => {
+      frame = 0;
+      const marker = root.getBoundingClientRect().top + Math.min(root.clientHeight * 0.32, 180);
+      let next = sections[0]?.id ?? "about";
+      for (const section of sections) {
+        if (section.getBoundingClientRect().top <= marker) next = section.id;
+      }
+      if (root.scrollTop + root.clientHeight >= root.scrollHeight - 4) next = sections.at(-1)?.id ?? next;
+      setActive(next);
+    };
+    const scheduleUpdate = () => {
+      if (!frame) frame = requestAnimationFrame(updateActiveSection);
+    };
+    updateActiveSection();
+    root.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+    return () => {
+      root.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      if (frame) cancelAnimationFrame(frame);
+    };
   }, []);
+
+  function selectSection(event: React.MouseEvent<HTMLAnchorElement>, id: string) {
+    event.preventDefault();
+    const root = scrollRef.current;
+    const section = root?.querySelector<HTMLElement>(`#${id}`);
+    if (!root || !section) return;
+    setActive(id);
+    root.scrollTo({ top: Math.max(0, section.offsetTop - 48), behavior: "smooth" });
+    window.history.replaceState(null, "", `#${id}`);
+  }
 
   function toggleRetro() {
     const next = !retro;
@@ -83,7 +112,7 @@ export function MenmaPortfolio() {
       <section className="menma-modern" aria-hidden={retro} onPointerMove={moveGlow}>
         <div className="menma-glow" aria-hidden="true" />
         <header className="menma-routebar">
-          <Link href="/" className="menma-mark">MENMA<span>/</span></Link>
+          <Link href="/" className="menma-mark" aria-label="Menma home"><MenmaLogo /></Link>
           <nav aria-label="Portfolio routes">
             {routeLinks.map((item) => <Link href={item.href} key={item.href}>{item.label}</Link>)}
           </nav>
@@ -93,13 +122,19 @@ export function MenmaPortfolio() {
         <aside className="menma-identity">
           <div>
             <p className="menma-handle">{brand.osName} / {identity.location}</p>
-            <h1>{brand.name}</h1>
+            <h1><MenmaLogo className="menma-hero-logo" /></h1>
             <h2>{brand.realName} · {brand.tagline}</h2>
             <p>{brand.summary}</p>
           </div>
           <nav className="menma-section-nav" aria-label="Homepage sections">
             {sectionLinks.map((item) => (
-              <a className={active === item.href.slice(1) ? "active" : ""} href={item.href} key={item.href}>
+              <a
+                aria-current={active === item.href.slice(1) ? "location" : undefined}
+                className={active === item.href.slice(1) ? "active" : ""}
+                href={item.href}
+                key={item.href}
+                onClick={(event) => selectSection(event, item.href.slice(1))}
+              >
                 <span aria-hidden="true" />{item.label}
               </a>
             ))}
@@ -112,7 +147,7 @@ export function MenmaPortfolio() {
           </div>
         </aside>
 
-        <div className="menma-scroll" tabIndex={-1}>
+        <div className="menma-scroll" ref={scrollRef} tabIndex={-1}>
           <section id="about" data-home-section>
             <p className="menma-index">01 / PROFILE</p>
             <h2>About</h2>
@@ -167,6 +202,7 @@ export function MenmaPortfolio() {
               localStorage.setItem("menma-sound", enabled ? "on" : "off");
             }}
             onThemeChange={setTheme}
+            onExit={() => setRetro(false)}
           />
         </section>
       ) : null}

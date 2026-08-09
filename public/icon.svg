@@ -1,5 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#0a0d11"/>
-  <path d="M12 48V16h8l9 18 9-18h8v32h-7V28L32 43h-6l-7-15v20h-7Z" fill="#f4f2ec"/>
-  <path d="M49 15h5L44 50h-5l10-35Z" fill="#70b7ff"/>
+  <rect width="64" height="64" rx="12" fill="#111110"/>
+  <g fill="#f4f1eb" font-family="monospace" font-size="7" font-weight="700" xml:space="preserve">
+    <text x="8" y="13">███╗   ███╗</text>
+    <text x="8" y="21">████╗ ████║</text>
+    <text x="8" y="29">██╔████╔██║</text>
+    <text x="8" y="37">██║╚██╔╝██║</text>
+    <text x="8" y="45">██║ ╚═╝ ██║</text>
+    <text x="8" y="53">╚═╝     ╚═╝</text>
+  </g>
 </svg>

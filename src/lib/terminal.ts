@@ -25,7 +25,7 @@ export const terminalCommands: TerminalCommand[] = [
   { name: "experience" }, { name: "projects" }, { name: "home" }, { name: "work" }, { name: "writing" },
   { name: "guestbook" }, { name: "contact" }, { name: "resume" }, { name: "github" }, { name: "linkedin" },
   { name: "email" }, { name: "date" }, { name: "echo" }, { name: "uname" }, { name: "neofetch" },
-  { name: "theme", usage: "theme amber|green" }, { name: "sound", usage: "sound on|off" },
+  { name: "theme", usage: "theme amber|green" }, { name: "sound", usage: "sound on|off" }, { name: "exit" },
 ];
 
 export function parseTerminalCommand(input: string): TerminalResult {

@@ -5,6 +5,7 @@ describe("MENMA.OS terminal helpers", () => {
   it("normalizes commands and aliases", () => {
     expect(parseTerminalCommand(" START resume.link ")).toEqual({ command: "open", args: ["resume.link"] });
     expect(parseTerminalCommand("theme GREEN")).toEqual({ command: "theme", args: ["green"] });
+    expect(parseTerminalCommand("EXIT")).toEqual({ command: "exit", args: [] });
   });
 
   it("completes commands and filesystem entries", () => {

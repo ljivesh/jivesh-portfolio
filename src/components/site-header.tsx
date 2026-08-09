@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Menu, Palette } from "lucide-react";
 import { useState } from "react";
+import { MenmaLogo } from "@/components/menma-logo";
 
 const navigation = [
   ["Work", "/work"],
@@ -23,7 +24,7 @@ export function SiteHeader() {
   return (
     <header className="site-header print:hidden">
       <div className="site-header-inner">
-        <Link className="site-brand" href="/">MENMA<span>/</span><small>Jivesh Lakhani</small></Link>
+        <Link className="site-brand" href="/" aria-label="Menma home"><MenmaLogo /><small>Jivesh Lakhani</small></Link>
         <nav className={open ? "open" : ""} aria-label="Primary navigation">
           {navigation.map(([label, href]) => <Link className={pathname === href ? "active" : ""} href={href} key={href} onClick={() => setOpen(false)}>{label}</Link>)}
         </nav>
