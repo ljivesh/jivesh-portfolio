@@ -1,6 +1,6 @@
 ---
-title: "Building a Multi-Channel AI Commerce Agent That Survives Production"
-description: "How shared knowledge, tools, memory, channel adapters, human handoff, and observability turn an LLM demo into a production commerce system."
+title: "Building a Multi-Channel AI Commerce Agent for Production"
+description: "What I learned building an AI shopping assistant for Shopify brands that runs on web chat, WhatsApp and Instagram."
 publishedAt: "2026-08-04"
 tags:
   - AI Agents
@@ -9,17 +9,15 @@ tags:
   - Architecture
 ---
 
-An AI shopping assistant looks deceptively simple in a demo: connect a model, add product data, and render a chat box. Production changes the problem. The assistant must understand a merchant, operate safely on real carts and orders, remain useful across channels, and give a human enough evidence to diagnose what happened.
+At KandidAI I spent most of my time on an AI shopping assistant for Shopify brands. Getting a demo working took very little: a model, some product data and a chat box. Getting it to a point where merchants trusted it with real carts and orders, on three different channels, took a lot longer. This post covers the parts that mattered most. I've left out merchant data and anything proprietary.
 
-This article describes the architecture behind that transition without exposing merchant data or proprietary implementation details.
+## One agent, three channels
 
-## One agent, several interfaces
+Shoppers reach the agent through the storefront chat widget, WhatsApp and Instagram. All three share the same merchant knowledge and the same commerce tools, but they behave very differently.
 
-The system serves shoppers on storefront web chat, WhatsApp, and Instagram. Those channels share merchant knowledge and commerce capabilities, but they do not share the same interaction model.
+On the website I can stream text as it's generated, show product cards and keep UI state in the browser. WhatsApp and Instagram are webhook-based. They have their own delivery rules, their own way of identifying users and their own media formats. Early on I treated them as thin transports over the same chat logic, and every channel-specific quirk turned into a special case in the agent code.
 
-Web chat can stream partial text, render product cards, and keep rich local UI state. Messaging platforms impose webhook lifecycles, delivery constraints, identity rules, and channel-specific media formats. Treating every channel as a thin transport layer creates brittle behavior.
-
-The practical boundary is a shared agent runtime surrounded by channel adapters:
+What worked better was one shared runtime with an adapter per channel:
 
 ```text
 Channel event
@@ -30,21 +28,21 @@ Channel event
   -> channel-specific rendering and delivery
 ```
 
-The runtime remains consistent while each adapter owns acknowledgements, retries, formatting, and platform semantics.
+The runtime doesn't know which channel it's talking to. Each adapter deals with acknowledgements, retries, formatting and whatever the platform expects.
 
-## Knowledge is a product workflow
+## Getting knowledge in
 
-Retrieval quality starts before a shopper sends a message. Merchants need a reliable ingestion path for products, collections, policy pages, files, frequently asked questions, and brand guidance.
+Answer quality depends on what's been ingested before the shopper ever types anything. Merchants need a dependable way to sync products, collections, policy pages, files, FAQs and brand guidelines.
 
-That pipeline needs observable states: queued, processing, indexed, failed, and stale. A document that silently failed to index is not a model problem; it is an operations problem.
+I learned to give that pipeline visible states, something like queued, processing, indexed, failed and stale. A lot of the "the bot gave a wrong answer" reports I looked at weren't model problems at all. A document had failed to index and nobody could see it.
 
-Knowledge also needs provenance. Retrieved context should identify its source so the system can trace weak answers back to missing, stale, or contradictory material.
+It also helps to know where each retrieved chunk came from. When an answer is weak, you want to trace it back to the missing, outdated or contradictory source instead of guessing.
 
-## Tools define the agent's real authority
+## Tools decide what the agent can actually do
 
-The model should not directly manipulate commerce state. It selects from typed tools that validate inputs and enforce policy. Typical capabilities include product discovery, variant lookup, cart operations, order status, and handoff to a person.
+I don't let the model change commerce state directly. It picks from a set of typed tools, and each tool validates its input and applies the rules. Typical ones are product search, variant lookup, cart operations, order status and handing off to a person.
 
-A tool contract should communicate more than arguments:
+A tool should return more than data. A simplified version of the shape I ended up with:
 
 ```ts
 type ToolResult<T> = {
@@ -56,37 +54,33 @@ type ToolResult<T> = {
 };
 ```
 
-This gives the runtime enough information to recover from transient failures without inventing success. Risky actions require stricter confirmation than read-only searches, and every mutation remains attributable to a conversation and tool execution.
+With this, the runtime can retry a temporary failure without pretending something worked. Read-only lookups go straight through, while anything that changes a cart needs stricter confirmation. Every change can be traced back to the conversation and tool call that made it.
 
-## Memory needs boundaries
+## Memory with limits
 
-Conversation history is useful, but unlimited history is expensive and noisy. The runtime separates recent conversational context from durable shopper or merchant facts. Durable memory must be explicit, inspectable, and removable.
+Conversation history is useful, but keeping all of it makes every call slower, more expensive and noisier. I keep recent context separate from the facts worth remembering long term about a shopper or merchant. That long-term memory should be visible and easy to remove.
 
-Cross-channel memory adds another constraint: identity resolution. A website visitor and a WhatsApp contact should not be merged simply because the content looks similar. The system only connects identities through defensible platform or merchant workflows.
+Cross-channel memory raises a harder question: is this WhatsApp contact the same person as that website visitor? I only link identities when the platform or the merchant's own data gives a solid reason to, never because two conversations look alike.
 
-## Human handoff is part of the architecture
+## Handoff to a human
 
-Handoff cannot be an apologetic final sentence. It is a state transition. Once triggered, the system records the reason, preserves the relevant transcript and tool context, alerts the correct queue, and changes how automated replies behave.
+A handoff can't just be a polite "someone will get back to you". In our system it's a change of state. When it triggers, we record why, keep the transcript and tool context, notify the right people (within the store's working hours), and change how the bot replies while a human has the conversation.
 
-Good handoff triggers include explicit shopper requests, repeated tool failures, policy-sensitive questions, and low-confidence situations where guessing would be costly.
+The triggers I found useful were the shopper asking for a person, tools failing repeatedly, sensitive policy questions, and cases where a wrong guess would be expensive.
 
-## Observability closes the loop
+## Tracing everything
 
-Production agent debugging requires a trace across retrieval, model calls, tools, latency, token usage, delivery, and final outcome. A transcript alone cannot explain why the assistant chose an irrelevant product or repeated an action.
+To debug the agent in production I need to see one shopper turn end to end: what was retrieved, which prompt and config were active, which tools ran and what they returned, where the time went, and whether a channel retried or duplicated an event. We use Langfuse for this. A transcript alone never explained why the bot recommended the wrong product or repeated an action.
 
-Traces should answer:
+The questions I ask of a trace:
 
 - Which knowledge sources were retrieved?
 - Which prompt and configuration were active?
-- Which tools were selected and what did they return?
-- Where was time spent?
-- Did a channel retry or duplicate an event?
-- Was a human eventually involved?
+- Which tools were called, and what did they return?
+- Where did the time go?
+- Did the channel retry or send the same event twice?
+- Did a human get involved?
 
-The useful unit is the complete shopper turn, not an isolated model request.
+## What actually helped
 
-## What made it production-ready
-
-The largest improvements did not come from repeatedly changing the model. They came from strengthening the system around it: deterministic tool contracts, reliable ingestion, channel-aware delivery, explicit state transitions, traceability, and merchant controls.
-
-An agent survives production when failure is visible, authority is bounded, and operators can understand what it did. The model matters. The surrounding product and operational architecture matters more.
+Looking back, swapping models didn't give us the biggest improvements. They came from work around the model: strict tool contracts, reliable ingestion, channel-specific delivery, explicit handoff states, tracing, and giving merchants proper controls. The model still matters, but most of my time went into the rest of the system.

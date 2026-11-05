@@ -4,7 +4,7 @@ A dual-interface engineering portfolio built with Next.js 16, React 19, TypeScri
 
 ## Features
 
-- Responsive modern portfolio with recruiter-focused content and five case studies.
+- Responsive modern portfolio with recruiter-focused content and six case studies.
 - Original LuckeyDuckey-style 55×30 phosphor terminal, powered by xterm.js and mapped onto a React Three Fiber Macintosh display. It includes the original fixed-grid visual rhythm, boot sequence, scanlines, virtual filesystem, command history, cursor editing, scrollback, audio, themes, and grounded camera-orbit controls.
 - MDX writing, moderated guestbook, contact delivery, web/PDF résumé, and SEO metadata.
 - Better Auth administration with roles, 2FA, moderation, contact inbox, and audit logs.

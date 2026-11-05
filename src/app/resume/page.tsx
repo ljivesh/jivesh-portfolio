@@ -9,12 +9,29 @@ export const metadata: Metadata = {
 
 const resumePath = "/jivesh-lakhani-resume.pdf";
 
-const experienceBullets = [
-  "Joined as the sole developer while completing B.Tech; transitioned full-time in June 2025 and owned architecture and delivery with the CTO.",
-  "Built a multi-channel AI commerce platform across web, WhatsApp, and Instagram for 40+ Shopify stores, processing approximately 2M monthly storefront sessions and 20K+ monthly shopper interactions.",
-  "Owned the SaaS control plane, real-time agent services, embedded storefront widget, Shopify extensions, analytics, automations, and browser-based conversion tooling end to end.",
-  "Deployed and maintained 10+ production services across AWS, Azure, and Oracle Cloud using Docker, CI/CD, Dokploy, Nginx, and Linux.",
-  "Owned the hiring process for interns by preparing job descriptions, conducting interviews, and finalizing candidates; subsequently led and mentored the selected interns.",
+const roles = [
+  {
+    company: "KDK Softwares",
+    href: "https://www.kdksoftware.com",
+    role: "AI-Assisted Developer",
+    location: "Jaipur, Rajasthan",
+    period: "Aug 2026 to Oct 2026",
+    bullets: [
+      "Fixed Income Tax, GST, and TDS workflows across Go, React, and desktop connectors; improved filing, imports, reconciliation, and portal sync while reducing customer-matching memory from 534 MB to 55 MB.",
+      "Added an internal LLM Management module for cross-product prompt configuration, and developed a Claude Code /bugfix workflow integrating Zoho MCPs, Claude in Chrome, and GitHub CLI to guide issues from diagnosis to tested PRs with human approval and data safeguards; added to 12 repositories.",
+    ],
+  },
+  {
+    company: "KandidAI (YouseAI Tech)",
+    role: "Founding Engineer",
+    location: "Delhi, India",
+    period: "Aug 2023 to Aug 2026",
+    bullets: [
+      "Joined as the sole developer while completing B.Tech; transitioned full-time in June 2025 and later led short-term engineering interns while owning architecture and delivery with the CTO.",
+      "Built a multi-channel AI commerce platform across web, WhatsApp, and Instagram for 40+ Shopify stores, processing approximately 2M monthly storefront sessions and 20K+ monthly shopper interactions.",
+      "Owned delivery across the SaaS control plane, real-time agents, storefront widget, Shopify extensions, analytics, and automations; deployed 10+ production services across AWS, Azure, and Oracle Cloud.",
+    ],
+  },
 ];
 
 const selectedProjects = [
@@ -29,7 +46,7 @@ const selectedProjects = [
   },
   {
     title: "Dynamic Shopify Storefronts",
-    stack: "OpenAI Agents SDK, Langfuse, Playwright, Shopify, Meta Ads",
+    stack: "Agents SDK, Langfuse, Playwright, Shopify, Meta Ads",
     bullets: [
       "Built an interactive Page Agent that combines Meta ad context, Shopify product and brand data, captured page state, and merchant instructions to plan and apply storefront changes.",
       "Created automated ad-to-landing-page workflows that analyze image and video creatives and generate audience-specific copy, media, and layout improvements.",
@@ -89,6 +106,7 @@ export default function ResumePage() {
         <header className="border-b-2 border-[#161a17] pb-7 text-center">
           <h1 className="text-[clamp(2.6rem,7vw,4.75rem)] leading-none font-semibold tracking-[-0.065em]">Jivesh Lakhani</h1>
           <p className="mt-3 text-sm font-medium text-[#374039]">AI Product Engineer | Founding Engineer</p>
+          <p className="mt-1 text-xs text-[#4d5850]">Japanese: N5 (NAT 5Q)</p>
           <div className="mt-3 flex flex-wrap justify-center gap-x-3 gap-y-1 font-mono text-[9px] text-[#515b54] sm:text-[10px]">
             <a href="tel:+919929902867">+91 99299 02867</a>
             <span>|</span>
@@ -102,19 +120,27 @@ export default function ResumePage() {
 
         <section className="resume-pdf-section">
           <h2 className="resume-pdf-heading">Experience</h2>
-          <div className="flex flex-col justify-between gap-2 sm:flex-row">
-            <div>
-              <h3 className="text-base font-semibold">KandidAI (YouseAI Tech)</h3>
-              <p className="mt-1 text-xs italic text-[#4d5850]">Founding Engineer</p>
-            </div>
-            <div className="text-left font-mono text-[10px] text-[#4d5850] sm:text-right">
-              <p>Delhi, India</p>
-              <p className="mt-1">Aug 2023 to Present</p>
-            </div>
+          <div className="space-y-6">
+            {roles.map((item) => (
+              <article key={item.company}>
+                <div className="flex flex-col justify-between gap-2 sm:flex-row">
+                  <div>
+                    <h3 className="text-base font-semibold">
+                      {item.href ? <a href={item.href}>{item.company}</a> : item.company}
+                    </h3>
+                    <p className="mt-1 text-xs italic text-[#4d5850]">{item.role}</p>
+                  </div>
+                  <div className="text-left font-mono text-[10px] text-[#4d5850] sm:text-right">
+                    <p>{item.location}</p>
+                    <p className="mt-1">{item.period}</p>
+                  </div>
+                </div>
+                <ul className="resume-pdf-list mt-4">
+                  {item.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}
+                </ul>
+              </article>
+            ))}
           </div>
-          <ul className="resume-pdf-list mt-4">
-            {experienceBullets.map((bullet) => <li key={bullet}>{bullet}</li>)}
-          </ul>
         </section>
 
         <section className="resume-pdf-section">

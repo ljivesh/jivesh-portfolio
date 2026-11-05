@@ -7,10 +7,10 @@ export const metadata = { title: "Contact", description: "Contact Jivesh Lakhani
 export default function ContactPage() {
   return (
     <main id="main-content">
-      <PageHero kicker="04 / Direct channel" title="Contact" intro="Tell me what you are building, where the system is stuck, and what an excellent outcome would look like." />
+      <PageHero kicker="04 / Direct channel" title="Contact" intro="If you're building something and think I could help, send me a message. A couple of lines about the product and the problem is plenty." />
       <section className="shell section-pad contact-grid">
         <aside className="contact-aside">
-          <h2>Open to the right hard problem.</h2>
+          <h2>Get in touch</h2>
           <p>{identity.availability}</p>
           <div className="contact-links">
             {contacts.map((link) => <a href={link.href} key={link.label} target={link.external ? "_blank" : undefined} rel={link.external ? "noreferrer" : undefined}><span>{link.label}</span><span>↗</span></a>)}

@@ -7,7 +7,7 @@ export const metadata = { title: "Work", description: "Production AI, commerce, 
 export default function WorkPage() {
   return (
     <main id="main-content">
-      <PageHero kicker="01 / Production systems" title="Selected work" intro="Five systems built across AI commerce, storefront personalization, sales automation, browser workflows, and personalized video." />
+      <PageHero kicker="01 / Production systems" title="Selected work" intro="Six things I've built or worked on, from AI shopping agents and ad-matched Shopify pages to cold-email tooling and tax software." />
       <section className="shell section-pad">
         <div className="work-grid">
           {projects.map((project) => (

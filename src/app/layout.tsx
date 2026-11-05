@@ -12,12 +12,12 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: { default: "Menma | Jivesh Lakhani — AI Product Engineer", template: "%s | Menma" },
-  description: "Jivesh Lakhani builds production AI agents, commerce systems, backend platforms, browser automation, and cloud infrastructure.",
+  description: "Jivesh Lakhani is a software engineer in Jaipur who builds AI agents, Shopify apps and backend systems.",
   keywords: ["Jivesh Lakhani", "Menma", "AI Product Engineer", "Founding Engineer", "AI Agents", "Backend Engineer", "Shopify"],
   authors: [{ name: "Jivesh Lakhani" }], creator: "Jivesh Lakhani",
   alternates: { canonical: "/" },
-  openGraph: { type: "website", locale: "en_US", url: siteUrl, siteName: "Menma", title: "Menma | Jivesh Lakhani", description: "Production AI products, backend systems, browser automation, and cloud infrastructure." },
-  twitter: { card: "summary_large_image", title: "Menma | Jivesh Lakhani", description: "AI products built end to end and operated in production." },
+  openGraph: { type: "website", locale: "en_US", url: siteUrl, siteName: "Menma", title: "Menma | Jivesh Lakhani", description: "Jivesh Lakhani is a software engineer in Jaipur who builds AI agents, Shopify apps and backend systems." },
+  twitter: { card: "summary_large_image", title: "Menma | Jivesh Lakhani", description: "Jivesh Lakhani is a software engineer in Jaipur who builds AI agents, Shopify apps and backend systems." },
   icons: { icon: "/icon.svg" },
 };
 

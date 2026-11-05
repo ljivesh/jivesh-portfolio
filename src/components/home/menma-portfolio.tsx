@@ -5,7 +5,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useRef, useState } from "react";
 import { BriefcaseBusiness, CodeXml, FileText, Mail, Menu, Monitor, Volume2, VolumeX, X } from "lucide-react";
 import { MenmaLogo } from "@/components/menma-logo";
-import { brand, capabilityGroups, contacts, experience, identity, projects } from "@/data/portfolio";
+import { brand, capabilityGroups, certifications, contacts, experience, identity, projects } from "@/data/portfolio";
 import { RetroComputerTerminal } from "./macintosh-terminal";
 
 const sectionLinks = [
@@ -153,6 +153,7 @@ export function MenmaPortfolio() {
             <h2>About</h2>
             <p>{identity.intro}</p>
             <p>{identity.story}</p>
+            {certifications.map((item) => <p key={item.name}>Outside of work I&apos;m learning Japanese and have passed the {item.name} ({item.note.toLowerCase()}).</p>)}
             <div className="menma-skills">
               {capabilityGroups.map((group) => <span key={group.label}>{group.label}</span>)}
             </div>
@@ -161,7 +162,7 @@ export function MenmaPortfolio() {
           <section id="projects" data-home-section>
             <p className="menma-index">02 / SYSTEMS</p>
             <h2>Projects</h2>
-            <p>Selected production systems I have architected, built, operated, or co-developed across AI commerce, sales automation, browser workflows, and personalized media.</p>
+            <p>Things I&apos;ve built or helped build, most of them running in production.</p>
             <div className="menma-projects">
               {projects.map((project) => (
                 <Link className="menma-project-row" href={`/work/${project.slug}`} key={project.slug} onMouseEnter={scrambleTitle}>

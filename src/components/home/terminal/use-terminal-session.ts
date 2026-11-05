@@ -42,15 +42,25 @@ const filesystem: FileEntry = {
   children: {
     "README.md": {
       type: "file",
-      content: "MENMA is the portfolio system of Jivesh Lakhani — an AI Product Engineer building production agents, commerce products, backend platforms, browser automation, and cloud infrastructure.",
+      content: "MENMA is Jivesh Lakhani's portfolio. I build AI agents,\nShopify apps and the backends behind them.",
     },
     "experience.log": {
       type: "file",
-      content: "KandidAI (YouseAI Tech) | Founding Engineer | Aug 2023–Present\nOwned commerce agents, Shopify applications, sales automation, production infrastructure, hiring, and engineering mentorship.",
+      content: [
+        "KDK Softwares | AI-Assisted Developer",
+        "Aug 2026–Oct 2026 | Jaipur",
+        "Income Tax, GST and TDS workflows in Go and React;",
+        "LLM prompt management; Claude Code /bugfix workflow.",
+        "",
+        "KandidAI (YouseAI Tech) | Founding Engineer",
+        "Aug 2023–Aug 2026 | Delhi",
+        "Commerce agents, Shopify apps, sales automation,",
+        "production infrastructure, hiring and mentorship.",
+      ].join("\n"),
     },
     "skills.txt": {
       type: "file",
-      content: "AI       OpenAI, Azure OpenAI, Agents SDK, RAG, Langfuse, Pinecone\nProduct  TypeScript, React, Next.js, Node.js, PostgreSQL\nSystems  Shopify, Meta, WhatsApp, Playwright, queues, webhooks\nInfra    Docker, GitHub Actions, AWS, Azure, Linux, Nginx",
+      content: "AI       OpenAI, Azure OpenAI, Agents SDK, RAG, Langfuse, Pinecone\nProduct  TypeScript, Go, React, Next.js, Node.js, PostgreSQL\nSystems  Shopify, Meta, WhatsApp, Playwright, queues, webhooks\nInfra    Docker, GitHub Actions, AWS, Azure, Linux, Nginx",
     },
     projects: {
       type: "directory",
@@ -60,6 +70,7 @@ const filesystem: FileEntry = {
         "agent-sdr.link": { type: "link", href: "/work/agent-sdr" },
         "linkbird.link": { type: "link", href: "/work/linkbird" },
         "vivo-video.link": { type: "link", href: "/work/vivo-video-platform" },
+        "kdk-tax.link": { type: "link", href: "/work/kdk-tax-compliance" },
       },
     },
     network: {
